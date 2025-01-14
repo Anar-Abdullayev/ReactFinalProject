@@ -1,0 +1,13 @@
+import {createSlice} from '@reduxjs/toolkit'
+
+let cryptoCurrencySlice = createSlice({
+    name: 'cryptoCurrency',
+    initialState: {
+        cryptoListArray: []
+    },
+    reducers: {
+        getCryptoList: (state, action) => {
+            
+        }
+    }
+})
