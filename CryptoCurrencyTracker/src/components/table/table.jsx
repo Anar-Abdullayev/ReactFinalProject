@@ -13,58 +13,71 @@ import { useDispatch, useSelector } from 'react-redux'
 import { cryptoListFetch } from '../../cryptoReducer/slices/cryptoCurrencyFetchs';
 
 const columns = [
-  { id: 'rank', label: 'Rank', minWidth: 0, maxWidth: 20},
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
+  { id: 'rank', align: 'center', label: 'Rank' },
+  { id: 'name', align: 'center', label: 'Name' },
+  { id: 'symbol', align: 'center', label: 'Symbol' },
   {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
+    id: 'price_usd',
+    label: 'Price',
+    align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
+    id: 'percent_change_1h',
+    label: '1 h',
+    align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
+    id: 'percent_change_24h',
+    label: '24 h',
+    align: 'center',
+    format: (value) => value.toLocaleString('en-US'),
+  },
+  {
+    id: 'percent_change_7d',
+    label: '7 day',
+    align: 'center',
+    format: (value) => value.toLocaleString('en-US'),
+  },
+  {
+    id: 'market_cap_usd',
+    label: 'Market cap',
+    align: 'center',
     format: (value) => value.toFixed(2),
   },
 ];
 
 
 function CryptoTable() {
-  let {cryptoListArray, loading, error} = useSelector((state) => state.cryptoSlice);
-  console.log(cryptoListArray);
-  let dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(cryptoListFetch())
-  },[])
+  let { cryptoListArray, loading, error, count } = useSelector((state) => state.cryptoSlice);
+
 
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  let dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(cryptoListFetch({ start: 0, limit: rowsPerPage }))
+  }, [])
+
   const handleChangePage = (event, newPage) => {
+    dispatch(cryptoListFetch({ start: newPage * rowsPerPage, limit: rowsPerPage }))
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    console.log(event.target.value);
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+    // console.log(event.target.value);
+    setRowsPerPage(event.target.value);
+    // setPage(0);
   };
 
+  // console.log((page * rowsPerPage)%100, ((page * rowsPerPage)%100 + rowsPerPage))
   if (loading)
-    return <p>Loading...</p>
+    return <p style={{ color: 'white' }}>Loading...</p>
   if (error)
-    return <p>Error: {error}</p>
+    return <p style={{ color: 'white' }}>Error: {error}</p>
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: '#121825', marginTop: '35px', borderRadius: '18px' }}>
@@ -86,17 +99,20 @@ function CryptoTable() {
           </TableHead>
           <TableBody>
             {cryptoListArray
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .slice((page * rowsPerPage) % 100, ((page * rowsPerPage) % 100 + rowsPerPage))
               .map((row) => {
                 return (
-                  <TableRow  hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.rank}>
                     {columns.map((column) => {
-                      const value = row[column.id];
+                      let value = row[column.id];
+                      let color = column.id.startsWith('percent_change') ? value < 0 ? 'red' : 'green' : 'white'
                       return (
-                        <TableCell key={column.id} align={column.align} sx={{ color: 'white' }}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
+                        <TableCell key={column.id} align={column.align} sx={{ color: color }}>
+                          {column.id === 'price_usd' ? `${value} $` :
+                            column.id.startsWith('percent_change') ? `${value} %` :
+                              column.format && typeof value === 'number'
+                                ? column.format(value)
+                                : value}
                         </TableCell>
                       );
                     })}
@@ -109,7 +125,7 @@ function CryptoTable() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={cryptoListArray.length}
+        count={count}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

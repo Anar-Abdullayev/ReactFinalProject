@@ -6,7 +6,8 @@ let cryptoCurrencySlice = createSlice({
     initialState: {
         cryptoListArray: [],
         loading: false,
-        error: null
+        error: null,
+        count: 0
     },
     reducers: {
         getCryptoList: (state, action) => {
@@ -20,7 +21,8 @@ let cryptoCurrencySlice = createSlice({
         })
         builder.addCase(cryptoListFetch.fulfilled, (state, action) => {
             state.loading = false
-            state.cryptoListArray = action.payload
+            state.cryptoListArray = action.payload.data
+            state.count = action.payload.info.coins_num
         })
         builder.addCase(cryptoListFetch.rejected, (state, action) => {
             state.loading = false
