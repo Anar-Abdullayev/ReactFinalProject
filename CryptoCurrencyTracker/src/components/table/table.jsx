@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { getCryptoList } from '../../cryptoReducer/slices/cryptoCurrencySlicer';
+import './table.css'
 import { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -11,39 +11,41 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useDispatch, useSelector } from 'react-redux'
 import { cryptoListFetch } from '../../cryptoReducer/slices/cryptoCurrencyFetchs';
+import Box from '@mui/material/Box';
+import Skeleton from '@mui/material/Skeleton';
 
 const columns = [
-  { id: 'rank', align: 'center', label: 'Rank' },
-  { id: 'name', align: 'center', label: 'Name' },
-  { id: 'symbol', align: 'center', label: 'Symbol' },
+  { id: 'rank', align: 'left', label: 'Rank' },
+  { id: 'name', align: 'left', label: 'Name' },
+  { id: 'symbol', align: 'left', label: 'Symbol' },
   {
     id: 'price_usd',
     label: 'Price',
-    align: 'center',
+    align: 'left',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'percent_change_1h',
     label: '1 h',
-    align: 'center',
+    align: 'left',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'percent_change_24h',
     label: '24 h',
-    align: 'center',
+    align: 'left',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'percent_change_7d',
     label: '7 day',
-    align: 'center',
+    align: 'left',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'market_cap_usd',
     label: 'Market cap',
-    align: 'center',
+    align: 'left',
     format: (value) => value.toFixed(2),
   },
 ];
@@ -68,14 +70,21 @@ function CryptoTable() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    // console.log(event.target.value);
+    dispatch(cryptoListFetch({ start: 0, limit: event.target.value }))
     setRowsPerPage(event.target.value);
-    // setPage(0);
+    setPage(0);
   };
-
+  console.log(cryptoListArray)
   // console.log((page * rowsPerPage)%100, ((page * rowsPerPage)%100 + rowsPerPage))
-  if (loading)
-    return <p style={{ color: 'white' }}>Loading...</p>
+  if (loading) {
+    return (
+      <Box sx={{ width: 300 }}>
+        <Skeleton sx={{backgroundColor: 'white'}} />
+        <Skeleton sx={{backgroundColor: 'gray'}} animation="wave" />
+        <Skeleton sx={{backgroundColor: 'white'}} animation={false} />
+      </Box>
+    )
+  }
   if (error)
     return <p style={{ color: 'white' }}>Error: {error}</p>
 
@@ -89,7 +98,6 @@ function CryptoTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
                   sx={{ backgroundColor: '#121825', color: 'white' }}
                 >
                   {column.label}
@@ -99,15 +107,14 @@ function CryptoTable() {
           </TableHead>
           <TableBody>
             {cryptoListArray
-              .slice((page * rowsPerPage) % 100, ((page * rowsPerPage) % 100 + rowsPerPage))
               .map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.rank}>
                     {columns.map((column) => {
                       let value = row[column.id];
-                      let color = column.id.startsWith('percent_change') ? value < 0 ? 'red' : 'green' : 'white'
+                      let valueClassName = column.id.startsWith('percent_change') ? value < 0 ? 'decreasedPercentageColumn' : 'increasedPercentageColumn' : 'originalColumn'
                       return (
-                        <TableCell key={column.id} align={column.align} sx={{ color: color }}>
+                        <TableCell className={valueClassName} key={column.id} align={column.align}>
                           {column.id === 'price_usd' ? `${value} $` :
                             column.id.startsWith('percent_change') ? `${value} %` :
                               column.format && typeof value === 'number'

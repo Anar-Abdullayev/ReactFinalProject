@@ -1,0 +1,11 @@
+.decreasedPercentageColumn{
+    color: red !important
+}
+
+.increasedPercentageColumn{
+    color: #67cb67 !important
+}
+
+.originalColumn {
+    color: white !important
+}
