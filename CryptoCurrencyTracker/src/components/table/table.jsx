@@ -75,7 +75,6 @@ function CryptoTable() {
     setPage(0);
   };
   console.log(cryptoListArray)
-  // console.log((page * rowsPerPage)%100, ((page * rowsPerPage)%100 + rowsPerPage))
   if (loading) {
     return (
       <Box sx={{ width: 300 }}>
@@ -109,7 +108,7 @@ function CryptoTable() {
             {cryptoListArray
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.rank}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.rank} sx={{'&:hover':{backgroundColor: '#1c004c !important', cursor: 'pointer' }}}>
                     {columns.map((column) => {
                       let value = row[column.id];
                       let valueClassName = column.id.startsWith('percent_change') ? value < 0 ? 'decreasedPercentageColumn' : 'increasedPercentageColumn' : 'originalColumn'
