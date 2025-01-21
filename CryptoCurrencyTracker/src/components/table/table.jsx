@@ -13,6 +13,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { cryptoListFetch } from '../../cryptoReducer/slices/cryptoSlicer/cryptoCurrencyFetchs';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import { setCryptoId } from '../../cryptoReducer/slices/sideBarSlicer/sidebarSlicer';
 
 const columns = [
   { id: 'rank', align: 'left', label: 'Rank' },
@@ -54,6 +57,7 @@ const columns = [
 function CryptoTable() {
   let { cryptoListArray, loading, error, count } = useSelector((state) => state.cryptoSlice);
 
+  const pageCount = [10, 30, 60, 100]
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -63,7 +67,7 @@ function CryptoTable() {
     dispatch(cryptoListFetch({ start: 0, limit: rowsPerPage }))
   }, [])
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (_, newPage) => {
     dispatch(cryptoListFetch({ start: newPage * rowsPerPage, limit: rowsPerPage }))
     setPage(newPage);
   };
@@ -87,7 +91,7 @@ function CryptoTable() {
     return <p style={{ color: 'white' }}>Error: {error}</p>
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: '#121825', marginTop: '35px', borderRadius: '18px' }}>
+    <Paper className='table'>
       <TableContainer sx={{ maxHeight: '100%' }} >
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -96,7 +100,7 @@ function CryptoTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  sx={{ backgroundColor: '#121825', color: 'white' }}
+                  className='tableCell'
                 >
                   {column.label}
                 </TableCell>
@@ -107,7 +111,7 @@ function CryptoTable() {
             {cryptoListArray
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.rank} sx={{'&:hover':{backgroundColor: '#1c004c !important', cursor: 'pointer' }}}>
+                  <TableRow onClick={() => dispatch(setCryptoId(row))} hover role="checkbox" tabIndex={-1} key={row.rank} className='tableRow'>
                     {columns.map((column) => {
                       let value = row[column.id];
                       let valueClassName = column.id.startsWith('percent_change') ? value < 0 ? 'decreasedPercentageColumn' : 'increasedPercentageColumn' : 'originalColumn'
@@ -118,6 +122,7 @@ function CryptoTable() {
                               column.format && typeof value === 'number'
                                 ? column.format(value)
                                 : value}
+                          {valueClassName.includes('decreasedPercentageColumn') ? <ArrowDropDownIcon/> : valueClassName.includes('increasedPercentageColumn') ? <ArrowDropUpIcon/> : <></>}
                         </TableCell>
                       );
                     })}
@@ -128,7 +133,7 @@ function CryptoTable() {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={pageCount}
         component="div"
         count={count}
         rowsPerPage={rowsPerPage}

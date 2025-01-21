@@ -6,25 +6,31 @@ import LineChart from './line';
 import { useEffect } from 'react';
 import moment from 'moment';
 import CryptoHistoryTable from './sidebarHistory';
+import { setCrpytoInfoVisibility } from '../../cryptoReducer/slices/sideBarSlicer/sidebarSlicer';
 
 function SideBar() {
     let dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(sideBarChartFetch(90));
-        dispatch(sideBarCryptoHistory(90));
-    }, [])
+    const cryptoInfo = useSelector((state) => state.sidebarSlice.crypto)
+    const containerVisibility = useSelector((state) => state.sidebarSlice.visible)
 
+
+    useEffect(() => {
+        dispatch(sideBarChartFetch(cryptoInfo.id));
+        dispatch(sideBarCryptoHistory(cryptoInfo.id));
+    }, [cryptoInfo])
     const chartPriceDatePair = useSelector((state) => state.sidebarSlice.chartPriceData)
 
     const labels = chartPriceDatePair.map(pair => UnixTimeToFormattedTime(pair[0]))
     const chartdata = chartPriceDatePair.map(pair => pair[1])
 
+    let classes = containerVisibility ? ' showContainer' : ' hideContainer'
+
     return (
-        <div className='container'>
+        <div className={'container' + classes}>
             <header>
-                <p style={{ textAlign: 'center' }}>Bitcoin</p>
-                <CloseIcon sx={{ backgroundColor: '#c94a4a', borderRadius: '15px', position: 'absolute', right: '15px', top: '15px' }} />
+                <p style={{ textAlign: 'center' }}>{cryptoInfo.name} ({cryptoInfo.symbol})</p>
+                <CloseIcon onClick={() => dispatch(setCrpytoInfoVisibility(false))} sx={{ backgroundColor: '#c94a4a', borderRadius: '15px', position: 'absolute', right: '15px', top: '15px', cursor: 'pointer' }} />
             </header>
             <LineChart labels={labels} chartdataset={chartdata} />
             <CryptoHistoryTable/>

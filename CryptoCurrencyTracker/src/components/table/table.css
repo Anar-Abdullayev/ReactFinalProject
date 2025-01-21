@@ -1,11 +1,30 @@
 .decreasedPercentageColumn{
-    color: red !important
+    color: var(--tablecell-negative-number-color) !important
 }
 
 .increasedPercentageColumn{
-    color: #67cb67 !important
+    color: var(--tablecell-positive-number-color) !important
 }
 
 .originalColumn {
-    color: white !important
+    color: var(--tablecell-text-color) !important
+}
+
+
+.table{
+    background-color: var(--frontmain-background-color) !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    margin-top: 35px !important;
+    border-radius: 18px !important;
+}
+
+.tableCell{
+    background-color: var(--frontmain-background-color) !important;  
+    color: var(--tablecell-text-color) !important;
+}
+
+.tableRow:hover{
+    background-color: var(--table-row-hover-color) !important;
+    cursor: pointer !important;
 }

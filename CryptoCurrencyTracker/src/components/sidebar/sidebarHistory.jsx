@@ -7,6 +7,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
+import '../table/table.css'
 
 const columns = [
     { id: 'date', label: 'Date', minWidth: 170 },
@@ -14,23 +16,29 @@ const columns = [
         id: 'price',
         label: 'Price',
         minWidth: 170,
-        align: 'right',
-        format: (value) => value.toFixed(2),
+        align: 'left',
+        format: (value) => value.toFixed(2) + ' $',
     },
 ];
 
 function CryptoHistoryTable() {
     const chartCryptoHistory = useSelector((state) => state.sidebarSlice.lastYearHistory)
-    console.log(chartCryptoHistory)
+    let reversed = [...chartCryptoHistory].reverse()
+    const rows = reversed.map((item) => {
+        var newItem = { date: moment.unix(item[0]).format('DD-MM-YYYY'), price: item[1]}
+        return newItem
+    })
+
 
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
+        <Paper className='table'>
+            <TableContainer sx={{ height: '90%' }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
                             {columns.map((column) => (
                                 <TableCell
+                                    className='tableCell'
                                     key={column.id}
                                     align={column.align}
                                     style={{ minWidth: column.minWidth }}
@@ -43,11 +51,11 @@ function CryptoHistoryTable() {
                     <TableBody>
                         {rows.map((row) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.date} className='tableRow'>
                                         {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
-                                                <TableCell key={column.id} align={column.align}>
+                                                <TableCell key={column.id} align={column.align} sx={{color:'white'}}>
                                                     {column.format && typeof value === 'number'
                                                         ? column.format(value)
                                                         : value}

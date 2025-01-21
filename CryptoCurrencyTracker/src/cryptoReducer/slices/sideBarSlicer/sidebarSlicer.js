@@ -4,14 +4,23 @@ import { sideBarChartFetch } from './sidebarFetchs'
 let sidebarSlicer = createSlice({
     name: 'sidebarSlicer',
     initialState: {
+        crypto: [],
         chartPriceData: [],
         lastYearHistory: [],
+        visible: false,
         loading: false,
         error: null
     },
     reducers: {
         getCryptoHistory: (state, action) => {
             state.lastYearHistory = action.payload
+        },
+        setCryptoId: (state, action) => {
+            state.crypto = action.payload
+            state.visible = true
+        },
+        setCrpytoInfoVisibility: (state, action) => {
+            state.visible = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -20,7 +29,8 @@ let sidebarSlicer = createSlice({
             state.error = false;
         })
         builder.addCase(sideBarChartFetch.fulfilled, (state, action) => {
-            state.chartPriceData = action.payload.price
+            if (action.payload)
+                state.chartPriceData = action.payload.price
             state.loading = true;
             state.error = false;
         })
@@ -31,5 +41,5 @@ let sidebarSlicer = createSlice({
     }
 })
 
-export const { getCryptoHistory } = sidebarSlicer.actions
+export const { getCryptoHistory, setCryptoId, setCrpytoInfoVisibility } = sidebarSlicer.actions
 export default sidebarSlicer.reducer
