@@ -1,10 +1,11 @@
-import cryptoCurrencySlicer from './slices/cryptoCurrencySlicer'
+import cryptoCurrencySlicer from './slices/cryptoSlicer/cryptoCurrencySlicer'
 
 import { configureStore } from "@reduxjs/toolkit";
 
 const crypto = configureStore({
     reducer: {
-        cryptoSlice: cryptoCurrencySlicer
+        cryptoSlice: cryptoCurrencySlicer,
+        sidebarSlice: s
     }
 });
 

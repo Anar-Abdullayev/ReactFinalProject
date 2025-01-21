@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+    width: 470px;
+    height: 95%;
+    background-color: #121825;
+    position: fixed;
+    right: 25px;
+    bottom: 2.5%;
+    z-index: 3;
+    border-radius: 35px;
+}
+
+.container header{
+    width: 100%;
+    height: 10%;
+    font-size: 25px;
+    color: white;
+    font-family: monospace;
+    margin-top: 15px;
+}

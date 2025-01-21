@@ -10,7 +10,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useDispatch, useSelector } from 'react-redux'
-import { cryptoListFetch } from '../../cryptoReducer/slices/cryptoCurrencyFetchs';
+import { cryptoListFetch } from '../../cryptoReducer/slices/cryptoSlicer/cryptoCurrencyFetchs';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 
