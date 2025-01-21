@@ -1,6 +1,8 @@
 .container {
     display: flex;
-    width: 470px;
+    overflow: auto;
+    flex-direction: column;
+    width: 550px;
     height: 95%;
     background-color: #121825;
     position: fixed;
@@ -17,4 +19,10 @@
     color: white;
     font-family: monospace;
     margin-top: 15px;
+}
+
+@media screen and (max-width: 600px) {
+    .container{
+        max-width: 440px;
+    }
 }

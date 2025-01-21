@@ -54,7 +54,6 @@ const columns = [
 function CryptoTable() {
   let { cryptoListArray, loading, error, count } = useSelector((state) => state.cryptoSlice);
 
-
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -74,7 +73,7 @@ function CryptoTable() {
     setRowsPerPage(event.target.value);
     setPage(0);
   };
-  console.log(cryptoListArray)
+  
   if (loading) {
     return (
       <Box sx={{ width: 300 }}>

@@ -2,15 +2,16 @@ import { createSlice } from '@reduxjs/toolkit'
 import { sideBarChartFetch } from './sidebarFetchs'
 
 let sidebarSlicer = createSlice({
-    name: 'sidebarSlice',
+    name: 'sidebarSlicer',
     initialState: {
-        sideBar: [],
+        chartPriceData: [],
+        lastYearHistory: [],
         loading: false,
         error: null
     },
     reducers: {
-        test: (state, action) => {
-
+        getCryptoHistory: (state, action) => {
+            state.lastYearHistory = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -19,6 +20,7 @@ let sidebarSlicer = createSlice({
             state.error = false;
         })
         builder.addCase(sideBarChartFetch.fulfilled, (state, action) => {
+            state.chartPriceData = action.payload.price
             state.loading = true;
             state.error = false;
         })
@@ -29,5 +31,5 @@ let sidebarSlicer = createSlice({
     }
 })
 
-export const { test } = sidebarSlicer.actions
+export const { getCryptoHistory } = sidebarSlicer.actions
 export default sidebarSlicer.reducer
